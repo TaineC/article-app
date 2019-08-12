@@ -1,7 +1,5 @@
 @import 'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css';
 
-
-
 .searchbar{
   width: 100%;
   /* border: 1px blue solid; */
@@ -11,6 +9,7 @@
 }
 
 input{
+  flex: 0 0 30%;
   margin: 0.5em;
   padding: 0.2em;
 }
@@ -35,9 +34,15 @@ input:focus{
   text-align: center;
   cursor: pointer;
   color: black;
+  margin: 0 0.1em 0.1em 0;
 }
 
 .item:hover{
+  background-color: black;
+  color: white;
+}
+
+.item:active{
   background-color: black;
   color: white;
 }
