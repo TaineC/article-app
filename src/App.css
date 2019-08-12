@@ -50,4 +50,25 @@ input:focus{
 .articles{
   border: thin black solid;
   padding: 0.5em;
+  /* width: 100%; */
+}
+
+h1{
+  text-align: center;
+  padding: 1em;
+  font-size: 2.5em;
+}
+
+h2{
+  font-size: 1.3em;
+  padding-bottom: 0.5em;
+  padding-top: 1em;
+}
+
+h3{
+  font-size: 1.1em;
+}
+
+p{
+  font-size: 0.8em;
 }
