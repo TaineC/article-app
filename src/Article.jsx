@@ -9,12 +9,12 @@ class Venue extends Component{
   render(){
     return(
         <div className="article">
-            <h2 className="title">{this.props.title}</h2>
-            <h3 className="author">{this.props.author}</h3>
+            <h3 className="title">{this.props.title}</h3>
+            <h4 className="author">{this.props.author}</h4>
             <p className="content">{this.props.content}</p>
             <p className="url">{this.props.url}</p>
         </div>
-      )
+    )
   }
 }
 

@@ -7,33 +7,21 @@ import './App.css';
 
 var APIkey = '498cb3731a91441784951e1fd976bdc6';
 
-var key = '?apiKey='+APIkey;
+var key = '&apiKey='+APIkey;
 
 class App extends Component{
   constructor(props){
     super(props)
     this.state = {
-      activeKey: 'business',
-      articles: [
-        {
-        //   title: "T-bond rates to decline on BSP's dovish stance - BusinessWorld Online",
-        //   author: "Neil Charm",
-        //   content: "THE GOVERNMENT will likely see lower yields for the reissued 10-year Treasury bonds (T-bond) to be auctioned off today following the central bank’s rate cut and amid dovish signals from the Bangko Sentral ng Pilipinas’ (BSP) chief. The Bureau of the...",
-        //   url: "https://www.bworldonline.com/t-bond-rates-to-decline-on-bsps-dovish-stance/",
-        // },
-        // {
-        //   title: "Japan's love of foreign insurance set to wane - BusinessWorld Online",
-        //   author: "Neil Charm",
-        //   content: "TOKYO Japan’s craze for overseas insurance products, driven by a need for better yield than the near-zero ones at home, has been a long-standing headwind for the yen as domestic insurers bought foreign bonds. But demand is likely to cool as the authorities...",
-        //   url: "https://www.bworldonline.com/japans-love-of-foreign-insurance-set-to-wane/",
-        // },
-        // {
-        //   title: "Les banques françaises profitent des difficultés de leurs clients les plus pauvres - La Lettre Patriote",
-        //   author: "Didier Dewitte",
-        //   content: "Selon nos confrères de Capital, une étude, effectuée par le comité consultatif du secteur financier (CCSF), montre que les frais bancaires sont beaucoup plus élevés en France quailleurs en Europe. Selon cette étude, que Le Parisien a pu consulter, le service...",
-        //   url: "https://lalettrepatriote.com/les-banques-francaises-profitent-des-difficultes-de-leurs-clients-les-plus-pauvres/",
-        },
-      ],
+      // activeKey: 'business',
+      businessArticles: [],
+      scienceArticles: [],
+      technologyArticles: [],
+      entertainmentArticles: [],
+      healthArticles: [],
+      sportsArticles: [],
+      searchInput: '',
+      articleSearch: [],
     }
   }
 
@@ -43,32 +31,70 @@ class App extends Component{
 
   handleSearchClick = (e) => {
     e.preventDefault();
+    this.loadSearch(this.state.searchInput);
     this.setState({activeKey: 'search'});
+    this.setState({searchInput:''});
   }
 
   loadCategory = (category) => {
-    var articlesURL = 'https://newsapi.org/v2/top-headlines'+key+'&category='+category;
+    var articlesURL = 'https://newsapi.org/v2/top-headlines?language=en&country=nz'+key+'&category='+category;
     fetch(articlesURL)
       .then(res=>res.json())
       .then((data)=>{
         var articles = data.articles;
-        // console.log(articles);
-        return articles;
-      })
+        
+        if(category == 'business'){
+          this.setState({businessArticles: articles});
+        }
+        if(category == 'science'){
+          this.setState({scienceArticles: articles});
+        }
+        if(category == 'technology'){
+          this.setState({technologyArticles: articles});
+        }
+        if(category == 'entertainment'){
+          this.setState({entertainmentArticles: articles});
+        }
+        if(category == 'health'){
+          this.setState({healthArticles: articles});
+        }
+        if(category == 'sports'){
+          this.setState({sportsArticles: articles});
+        }
+      });
   }
 
   componentDidMount(){
-    this.loadCategory();
+    this.loadCategory('business');
+    this.loadCategory('science');
+    this.loadCategory('technology');
+    this.loadCategory('entertainment');
+    this.loadCategory('health');
+    this.loadCategory('sports');
   }
 
-  // loadCategory(eventKey);
+  handleInputChange = (e) => {
+    this.setState({searchInput: e.target.value});
+  }
+
+  loadSearch = (term) => {
+    var articlesURL = 'https://newsapi.org/v2/top-headlines?language=en&country=nz'+key+'&q='+term;
+	  fetch(articlesURL)
+		  .then( res=>res.json())
+		  .then((data)=>{
+			  var articles = data.articles;
+        
+        this.setState({articleSearch: articles});
+		  })
+  }
 
   render(){
     return(
       <div className="container">
         <Tab.Container activeKey={this.state.activeKey} onSelect={this.handleTabSelect}>
+        <h1>Search Content or Select Category</h1>
         <div className="searchbar">
-          <input type="text" placeholder="search keywords" className="search"/>
+          <input type="text" placeholder="search keywords" className="search" value={this.state.searchInput} onChange={this.handleInputChange}/>
           <Button variant="primary" className="btn" onClick={this.handleSearchClick} type="submit">Search</Button>
         </div>
         <div className="articles-layout">
@@ -77,17 +103,26 @@ class App extends Component{
               <Nav.Link eventKey="business" className="item">Business</Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link eventKey="science" className="item">Science</Nav.Link>
+              <Nav.Link eventKey="science" className="item" >Science</Nav.Link>
             </Nav.Item>
             <Nav.Item>
               <Nav.Link eventKey="technology" className="item">Technology</Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Nav.Link eventKey="entertainment" className="item">Entertainment</Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Nav.Link eventKey="health" className="item">Health</Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Nav.Link eventKey="sports" className="item">Sports</Nav.Link>
             </Nav.Item>
           </Nav>
           <Tab.Content>
             <Tab.Pane eventKey="business">
             <div className="articles">
-              <h1>Business</h1>
-              {this.state.articles.map((article) => {
+              <h2>{this.state.activeKey}</h2>
+              {this.state.businessArticles.map((article) => {
                 var articleProps = {
                   ...article,
                   key: Math.random(),
@@ -99,30 +134,79 @@ class App extends Component{
             </Tab.Pane>
             <Tab.Pane eventKey="science">
             <div className="articles">
-              <h1>Science</h1>
-              <div className="article">
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur sit ex reprehenderit voluptatem quod corrupti nobis impedit perferendis repellat id.</p>
-              </div>
-              <div className="article">
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur sit ex reprehenderit voluptatem quod corrupti nobis impedit perferendis repellat id.</p>
-              </div>
-              <div className="article">
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur sit ex reprehenderit voluptatem quod corrupti nobis impedit perferendis repellat id.</p>
-              </div>
+              <h2>{this.state.activeKey}</h2>
+              {this.state.scienceArticles.map((article) => {
+                var articleProps = {
+                  ...article,
+                  key: Math.random(),
+                }
+
+                return(<Article {...articleProps}/>)
+              })}
             </div>
             </Tab.Pane>
             <Tab.Pane eventKey="technology">
             <div className="articles">
-              <h1>Technology</h1>
-              <div className="article">
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur sit ex reprehenderit voluptatem quod corrupti nobis impedit perferendis repellat id.</p>
-              </div>
-              <div className="article">
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur sit ex reprehenderit voluptatem quod corrupti nobis impedit perferendis repellat id.</p>
-              </div>
-              <div className="article">
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur sit ex reprehenderit voluptatem quod corrupti nobis impedit perferendis repellat id.</p>
-              </div>
+              <h2>{this.state.activeKey}</h2>
+              {this.state.technologyArticles.map((article) => {
+                var articleProps = {
+                  ...article,
+                  key: Math.random(),
+                }
+
+                return(<Article {...articleProps}/>)
+              })}
+            </div>
+            </Tab.Pane>
+            <Tab.Pane eventKey="entertainment">
+            <div className="articles">
+              <h2>{this.state.activeKey}</h2>
+              {this.state.entertainmentArticles.map((article) => {
+                var articleProps = {
+                  ...article,
+                  key: Math.random(),
+                }
+
+                return(<Article {...articleProps}/>)
+              })}
+            </div>
+            </Tab.Pane>
+            <Tab.Pane eventKey="health">
+            <div className="articles">
+              <h2>{this.state.activeKey}</h2>
+              {this.state.healthArticles.map((article) => {
+                var articleProps = {
+                  ...article,
+                  key: Math.random(),
+                }
+
+                return(<Article {...articleProps}/>)
+              })}
+            </div>
+            </Tab.Pane>
+            <Tab.Pane eventKey="sports">
+            <div className="articles">
+              <h2>{this.state.activeKey}</h2>
+              {this.state.sportsArticles.map((article) => {
+                var articleProps = {
+                  ...article,
+                  key: Math.random(),
+                }
+
+                return(<Article {...articleProps}/>)
+              })}
+            </div>
+            </Tab.Pane>
+            <Tab.Pane eventKey="search">
+            <div className="articles search-articles">
+              {this.state.articleSearch.map((article) => {
+                var articleProps = {
+                  ...article,
+                  key: Math.random(),
+                }
+
+                return(<Article {...articleProps}/>)
+              })}
             </div>
             </Tab.Pane>
           </Tab.Content>
